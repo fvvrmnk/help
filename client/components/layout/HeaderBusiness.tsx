@@ -40,7 +40,7 @@ export function HeaderBusiness() {
                     : "text-muted-foreground hover:text-foreground hover:bg-muted/60",
                 ].join(" ")
               }
-              aria-current={({ isActive }) => (isActive ? "page" : undefined)}
+              aria-current="page"
             >
               {item.label}
             </NavLink>
@@ -78,7 +78,7 @@ export function HeaderBusiness() {
                     : "text-muted-foreground hover:text-foreground hover:bg-muted/60",
                 ].join(" ")
               }
-              aria-current={({ isActive }) => (isActive ? "page" : undefined)}
+              aria-current="page"
             >
               {item.label}
             </NavLink>
