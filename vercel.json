@@ -1,0 +1,10 @@
+{
+  "buildCommand": "pnpm run build:client",
+  "outputDirectory": "dist/spa",
+  "framework": "vite",
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api" },
+    { "source": "/sitemap.xml", "destination": "/api" },
+    { "source": "/((?!assets/).*)", "destination": "/index.html" }
+  ]
+}
