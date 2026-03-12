@@ -24,7 +24,7 @@ export function FooterBusiness() {
           </a>
           <div className="flex items-start gap-2 text-sm text-muted-foreground">
             <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-            <span>פתן 3, מרכז העיר, אילת</span>
+            <span>Sderot HaTmarim 3, Eilat, 8786302, Израиль</span>
           </div>
           <a
             href="tel:+972536001963"
@@ -82,7 +82,7 @@ export function FooterBusiness() {
           <div className="overflow-hidden rounded-xl border border-border/70">
             <iframe
               title="DocsHelp офис — Eilat"
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3484.5!2d34.9511!3d29.5577!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x15006f3b0c0e0001%3A0x1!2sPatan+3%2C+Eilat!5e0!3m2!1sen!2sil!4v1700000000000"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3393.8!2d34.9476!3d29.5581!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x15006ef9bb4d3b5b%3A0x1!2sSderot+HaTmarim+3%2C+Eilat%2C+8786302!5e0!3m2!1sru!2sil!4v1700000000001"
               width="100%"
               height="180"
               style={{ border: 0 }}

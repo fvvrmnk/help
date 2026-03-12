@@ -15,13 +15,13 @@ export function HeaderBusiness() {
   return (
     <header className="sticky top-0 z-40 border-b border-border/70 bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4">
-        <Link to="/" className="flex items-center gap-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring rounded-lg" aria-label="DocsHelp - на главную">
-          <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary ring-1 ring-primary/20" aria-hidden="true">
+        <Link to="/" className="flex min-w-0 shrink-0 items-center gap-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring rounded-lg" aria-label="DocsHelp - на главную">
+          <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary ring-1 ring-primary/20" aria-hidden="true">
             <ShieldCheck className="h-5 w-5" />
           </span>
-          <div className="leading-tight">
+          <div className="leading-tight min-w-0">
             <div className="text-sm font-extrabold tracking-tight">DocsHelp</div>
-            <div className="text-xs text-muted-foreground">
+            <div className="hidden text-xs text-muted-foreground xs:block sm:block">
               Дистанционные услуги по документам
             </div>
           </div>
@@ -47,8 +47,8 @@ export function HeaderBusiness() {
           ))}
         </nav>
 
-        <div className="flex items-center gap-2">
-          <ContactFormDialog triggerClassName="gap-2 rounded-xl" />
+        <div className="flex shrink-0 items-center gap-2">
+          <ContactFormDialog triggerClassName="gap-2 rounded-xl text-xs sm:text-sm" />
           <Button asChild variant="outline" className="gap-2 rounded-xl hidden sm:inline-flex">
             <a href="https://wa.me/972536001963" target="_blank" rel="noreferrer">
               <MessageCircle className="h-4 w-4" />

@@ -24,7 +24,7 @@ export const testimonials: Testimonial[] = [
     role: "Водитель-международник",
     text: "Восстанавливал права после потери. Быстро, честно, без лишних вопросов. Не пришлось ездить куда-то лично — всё по Telegram. Рекомендую всем дальнобойщикам!",
     rating: 5,
-    avatar: "https://images.pexels.com/photos/5308640/pexels-photo-5308640.jpeg?auto=compress&cs=tinysrgb&w=120&h=120&fit=crop",
+    avatar: "https://images.pexels.com/photos/804009/pexels-photo-804009.jpeg?auto=compress&cs=tinysrgb&w=120&h=120&fit=crop",
   },
   {
     id: "3",

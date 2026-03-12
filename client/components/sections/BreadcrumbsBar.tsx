@@ -21,7 +21,7 @@ export function BreadcrumbsBar(props: {
               <div key={`${item.label}-${idx}`} className="inline-flex">
                 <BreadcrumbItem>
                   {isLast || !item.to ? (
-                    <BreadcrumbPage>{item.label}</BreadcrumbPage>
+                    <BreadcrumbPage className="max-w-[180px] truncate sm:max-w-xs md:max-w-none">{item.label}</BreadcrumbPage>
                   ) : (
                     <BreadcrumbLink asChild>
                       <Link to={item.to}>{item.label}</Link>

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { BreadcrumbsBar } from "@/components/sections/BreadcrumbsBar";
 import { FAQAccordion, type FAQItem } from "@/components/sections/FAQAccordion";
 import { HowItWorksSteps } from "@/components/sections/HowItWorksSteps";
@@ -23,6 +24,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { ServiceQuickNav } from "@/components/sections/ServiceQuickNav";
 import { CountryFlagBadge } from "@/components/ui/CountryFlagBadge";
+import { getServiceHeaderImage } from "@/components/sections/ServiceCard";
+import { ContactFormDialog } from "@/components/forms/ContactFormDialog";
 import { Link, useParams } from "react-router-dom";
 
 function getPpcBullets(service: { serviceGroup: string; nameRu: string }) {
@@ -182,6 +185,9 @@ function buildFaq(params: {
 }
 
 export default function ServicePage() {
+  const [tariffDialogOpen, setTariffDialogOpen] = useState(false);
+  const [selectedTariff, setSelectedTariff] = useState<TariffName | undefined>();
+
   const params = useParams();
   const countryKey = params.countryKey as CountryKey | undefined;
   const slug = params.slug;
@@ -277,54 +283,57 @@ export default function ServicePage() {
       />
 
       <section className="mx-auto max-w-6xl px-4 py-12">
-        <div className="rounded-2xl border border-border/70 bg-gradient-to-b from-muted/30 to-background p-6 md:p-10">
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-muted-foreground">Услуга</span>
-            <CountryFlagBadge
-              countryKey={safeCountry}
-              className="h-6 w-9 opacity-60"
-            />
-          </div>
-          <h1 className="mt-2 text-3xl font-extrabold tracking-tight md:text-4xl">
-            {service.nameRu}
-          </h1>
-          <p className="mt-3 max-w-prose text-muted-foreground">
-            Дистанционно, без личного присутствия. 3 тарифа по срокам. Цена — по
-            запросу.
-          </p>
-          <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-            <Button
-              asChild
-              size="lg"
-              className="w-full rounded-2xl sm:w-auto"
-            >
-              <a
-                href={getTelegramChatUrl(baseMessage)}
-                target="_blank"
-                rel="noreferrer"
-              >
-                Получить консультацию в Telegram
-              </a>
-            </Button>
-            <Button
-              asChild
-              size="lg"
-              variant="outline"
-              className="w-full rounded-2xl sm:w-auto"
-            >
-              <a
-                href={getTelegramChatUrl(
-                  `${baseMessage}\n\nПожалуйста, уточните сроки и требования.`,
-                )}
-                target="_blank"
-                rel="noreferrer"
-              >
-                Уточнить сроки и требования
-              </a>
-            </Button>
-          </div>
+        <div className="overflow-hidden rounded-2xl border border-border/70 bg-card">
+          {/* Service image — same as the card in the catalog */}
+          {(() => {
+            const img = getServiceHeaderImage(service);
+            return (
+              <div className="relative h-52 md:h-64">
+                <img
+                  src={img.src}
+                  alt={img.alt}
+                  className="h-full w-full object-cover"
+                  style={img.objectPosition ? { objectPosition: img.objectPosition } : undefined}
+                  loading="eager"
+                />
+                <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/20 to-black/55" />
+                <div className="absolute bottom-4 left-4 right-4 flex items-end justify-between">
+                  <span className="rounded-xl border border-white/20 bg-black/40 px-3 py-1 text-xs text-white/90 backdrop-blur">
+                    {service.serviceGroup}
+                  </span>
+                  <CountryFlagBadge countryKey={safeCountry} className="h-6 w-9 opacity-90" />
+                </div>
+              </div>
+            );
+          })()}
 
-          <ServiceQuickNav className="mt-6" />
+          <div className="p-6 md:p-10">
+            <span className="text-sm text-muted-foreground">Услуга</span>
+            <h1 className="mt-2 text-3xl font-extrabold tracking-tight md:text-4xl">
+              {service.nameRu}
+            </h1>
+            <p className="mt-3 max-w-prose text-muted-foreground">
+              Дистанционно, без личного присутствия. 3 тарифа по срокам. Цена — по
+              запросу.
+            </p>
+            <div className="mt-6">
+              <Button
+                asChild
+                size="lg"
+                className="w-full rounded-2xl sm:w-auto"
+              >
+                <a
+                  href={getTelegramChatUrl(baseMessage)}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Получить консультацию в Telegram
+                </a>
+              </Button>
+            </div>
+
+            <ServiceQuickNav className="mt-6" />
+          </div>
         </div>
       </section>
 
@@ -353,11 +362,28 @@ export default function ServicePage() {
       <section id="tariffs" className="mx-auto max-w-6xl px-4 py-12">
         <h2 className="text-2xl font-bold tracking-tight">Сроки и тарифы</h2>
         <p className="mt-2 max-w-prose text-sm text-muted-foreground">
-          Выберите тариф — сообщение в Telegram будет заполнено автоматически.
+          Выберите тариф и отправьте заявку — мы свяжемся с вами.
         </p>
         <div className="mt-6">
-          <TariffTable buildMessage={buildTariffMessage} />
+          <TariffTable
+            buildMessage={buildTariffMessage}
+            onSelect={(tariff) => {
+              setSelectedTariff(tariff);
+              setTariffDialogOpen(true);
+            }}
+          />
         </div>
+
+        {/* Controlled dialog opened by tariff buttons */}
+        <ContactFormDialog
+          open={tariffDialogOpen}
+          onOpenChange={(v) => {
+            setTariffDialogOpen(v);
+            if (!v) setSelectedTariff(undefined);
+          }}
+          initialService={service.nameRu}
+          initialTariff={selectedTariff}
+        />
       </section>
 
       <div id="process">
@@ -417,7 +443,7 @@ export default function ServicePage() {
                 key={s.id}
                 asChild
                 variant="outline"
-                className="rounded-full"
+                className="h-auto rounded-full px-4 py-2 text-left [white-space:normal]"
               >
                 <Link to={`/services/${s.countryKey}/${s.slug}`}>{s.nameRu}</Link>
               </Button>

@@ -42,7 +42,7 @@ export function AboutUsBlock() {
       </p>
 
       {/* Team photo strip */}
-      <div className="mt-6 grid gap-3 sm:grid-cols-3 overflow-hidden rounded-2xl">
+      <div className="mt-6 grid gap-3 sm:grid-cols-3">
         {teamPhotos.map((photo) => (
           <div key={photo.src} className="relative h-44 overflow-hidden rounded-2xl">
             <img

@@ -16,13 +16,13 @@ export function TelegramCTASection(props: {
             {props.description}
           </p>
         </div>
-        <Button asChild size="lg" className="gap-2 rounded-2xl">
+        <Button asChild size="lg" className="w-full gap-2 rounded-2xl sm:w-auto [white-space:normal] text-center">
           <a
             href={getTelegramChatUrl(props.message)}
             target="_blank"
             rel="noreferrer"
           >
-            <Send className="h-4 w-4" />
+            <Send className="h-4 w-4 shrink-0" />
             Написать в Telegram @{TELEGRAM_HANDLE}
           </a>
         </Button>

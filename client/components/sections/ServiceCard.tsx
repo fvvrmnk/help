@@ -229,27 +229,40 @@ const imageSetOverrides: Partial<
   ],
 };
 
+export function getServiceHeaderImage(service: ServiceItem, index = 0): HeaderImage {
+  const perServiceOverride = imageByServiceName[service.nameRu];
+  const overrideKey = `${service.countryKey}:${service.serviceGroup}` as keyof typeof imageSetOverrides;
+  const imageSet = imageSetOverrides[overrideKey];
+  const rotationIndex = index % (imageSet?.length ?? 1);
+  return (
+    perServiceOverride ??
+    (imageSet ? imageSet[rotationIndex] : imageByGroup[service.serviceGroup])
+  );
+}
+
 export function ServiceCard(props: { service: ServiceItem; index?: number }) {
   const s = props.service;
 
-  const perServiceOverride = imageByServiceName[s.nameRu];
+  const headerImage = getServiceHeaderImage(s, props.index ?? 0);
 
-  const overrideKey = `${s.countryKey}:${s.serviceGroup}` as keyof typeof imageSetOverrides;
-  const imageSet = imageSetOverrides[overrideKey];
-  const rotationIndex = (props.index ?? 0) % (imageSet?.length ?? 1);
-
-  const headerImage =
-    perServiceOverride ??
-    (imageSet ? imageSet[rotationIndex] : imageByGroup[s.serviceGroup]);
+  const href = `/services/${s.countryKey}/${s.slug}`;
 
   return (
-    <Card className="overflow-hidden rounded-2xl border-border/70 bg-card">
+    <Card className="group relative overflow-hidden rounded-2xl border-border/70 bg-card transition hover:shadow-md">
+      {/* Full-card link */}
+      <Link
+        to={href}
+        className="absolute inset-0 z-10 rounded-2xl focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+        aria-label={s.nameRu}
+        tabIndex={0}
+      />
+
       <div className="relative">
         <div className="relative h-36">
           <img
             src={headerImage.src}
             alt={headerImage.alt}
-            className="h-full w-full object-cover object-top"
+            className="h-full w-full object-cover object-top transition-transform duration-300 group-hover:scale-[1.03]"
             style={
               headerImage.objectPosition
                 ? { objectPosition: headerImage.objectPosition }
@@ -288,12 +301,14 @@ export function ServiceCard(props: { service: ServiceItem; index?: number }) {
       </CardContent>
 
       <CardFooter className="p-6 pt-0">
-        <Button asChild className="w-full gap-2 rounded-xl">
-          <Link to={`/services/${s.countryKey}/${s.slug}`}>
-            <Info className="h-4 w-4" />
-            Подробнее
-          </Link>
-        </Button>
+        <div className="relative z-20 w-full">
+          <Button asChild className="w-full gap-2 rounded-xl">
+            <Link to={href}>
+              <Info className="h-4 w-4" />
+              Подробнее
+            </Link>
+          </Button>
+        </div>
       </CardFooter>
     </Card>
   );
