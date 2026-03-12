@@ -4,6 +4,7 @@ interface ContactFormData {
   name: string;
   contact: string;
   service?: string;
+  tariff?: string;
   note?: string;
   gdprConsent: boolean;
 }
@@ -77,7 +78,7 @@ export const handleContact: RequestHandler = async (req, res) => {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const { name, contact, service, note, gdprConsent }: ContactFormData = req.body;
+  const { name, contact, service, tariff, note, gdprConsent }: ContactFormData = req.body;
 
   // Validate required fields
   if (!name || typeof name !== "string" || name.trim().length < 2) {
@@ -109,7 +110,7 @@ export const handleContact: RequestHandler = async (req, res) => {
 
 <b>👤 Имя:</b> ${escapeHtml(name.trim())}
 <b>📞 Контакт:</b> ${escapeHtml(contactTrimmed)}
-${service ? `<b>🎯 Услуга:</b> ${escapeHtml(String(service).trim())}\n` : ""}${note ? `<b>📝 Заметка:</b> ${escapeHtml(String(note).trim())}\n` : ""}<b>⏰ Время:</b> ${new Date().toLocaleString("ru-RU")}
+${service ? `<b>🎯 Услуга:</b> ${escapeHtml(String(service).trim())}\n` : ""}${tariff ? `<b>⚡ Тариф:</b> ${escapeHtml(String(tariff).trim())}\n` : ""}${note ? `<b>📝 Заметка:</b> ${escapeHtml(String(note).trim())}\n` : ""}<b>⏰ Время:</b> ${new Date().toLocaleString("ru-RU")}
   `.trim();
 
   // Send to Telegram
