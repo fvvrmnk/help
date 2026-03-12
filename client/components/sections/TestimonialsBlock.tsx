@@ -16,6 +16,7 @@ export const testimonials: Testimonial[] = [
     role: "Эмигрантка, Австралия",
     text: "DocsHelp спасли меня! Нужно было срочно получить свидетельство о рождении для визы, а в России в поликлинике задержка на месяцы. Оформили за неделю, все официально и с апостилем. Спасибо!",
     rating: 5,
+    avatar: "https://images.pexels.com/photos/16160869/pexels-photo-16160869.jpeg?auto=compress&cs=tinysrgb&w=120&h=120&fit=crop",
   },
   {
     id: "2",
@@ -23,6 +24,7 @@ export const testimonials: Testimonial[] = [
     role: "Водитель-международник",
     text: "Восстанавливал права после потери. Быстро, честно, без лишних вопросов. Не пришлось ездить куда-то лично — всё по Telegram. Рекомендую всем дальнобойщикам!",
     rating: 5,
+    avatar: "https://images.pexels.com/photos/5308640/pexels-photo-5308640.jpeg?auto=compress&cs=tinysrgb&w=120&h=120&fit=crop",
   },
   {
     id: "3",
@@ -30,6 +32,7 @@ export const testimonials: Testimonial[] = [
     role: "Мама в декрете, переезд в Канаду",
     text: "С тремя детьми нет времени ходить в ЗАГС. DocsHelp оформили все справки, которые мне нужны были для переезда. Профессионально и по доступной цене.",
     rating: 5,
+    avatar: "https://images.pexels.com/photos/18351014/pexels-photo-18351014.jpeg?auto=compress&cs=tinysrgb&w=120&h=120&fit=crop",
   },
   {
     id: "4",
@@ -37,6 +40,7 @@ export const testimonials: Testimonial[] = [
     role: "HR-менеджер, работодатель",
     text: "Компания использует DocsHelp для оформления документов иностранных сотрудников. Точность, оперативность и отличная коммуникация. Партнёр надёжный!",
     rating: 5,
+    avatar: "https://images.pexels.com/photos/7752803/pexels-photo-7752803.jpeg?auto=compress&cs=tinysrgb&w=120&h=120&fit=crop",
   },
   {
     id: "5",
@@ -44,6 +48,7 @@ export const testimonials: Testimonial[] = [
     role: "Студент, учёба в Германии",
     text: "Нужна была справка из МВД для немецкого вуза, а сам я в Берлине. DocsHelp всё оформил дистанционно. Документ признан на 100%. Спасибо, ребята!",
     rating: 5,
+    avatar: "https://images.pexels.com/photos/1546912/pexels-photo-1546912.jpeg?auto=compress&cs=tinysrgb&w=120&h=120&fit=crop",
   },
   {
     id: "6",
@@ -51,6 +56,7 @@ export const testimonials: Testimonial[] = [
     role: "Владелица МП, обмен паспорта",
     text: "Занята делами в компании, а старый паспорт уже истекает. DocsHelp помогли с обновлением за 3 дня. Удобный сервис, рекомендую!",
     rating: 5,
+    avatar: "https://images.pexels.com/photos/4458403/pexels-photo-4458403.jpeg?auto=compress&cs=tinysrgb&w=120&h=120&fit=crop",
   },
 ];
 
@@ -96,11 +102,20 @@ export function TestimonialsBlock() {
 
             {/* Author */}
             <div className="flex items-center gap-3 pt-4 border-t border-border/70">
-              <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                <span className="text-xs font-bold text-primary">
-                  {testimonial.name.charAt(0)}
-                </span>
-              </div>
+              {testimonial.avatar ? (
+                <img
+                  src={testimonial.avatar}
+                  alt={testimonial.name}
+                  className="h-10 w-10 rounded-full object-cover flex-shrink-0"
+                  loading="lazy"
+                />
+              ) : (
+                <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                  <span className="text-xs font-bold text-primary">
+                    {testimonial.name.charAt(0)}
+                  </span>
+                </div>
+              )}
               <div className="min-w-0">
                 <div className="text-sm font-semibold truncate">
                   {testimonial.name}

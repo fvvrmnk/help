@@ -138,6 +138,15 @@
     @apply outline-none;
   }
 
+  /* Hide scrollbar but keep scroll functionality */
+  .scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+
   /* Reduced motion support (WCAG 2.3.3) */
   @media (prefers-reduced-motion: reduce) {
     *,

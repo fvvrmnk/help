@@ -22,6 +22,7 @@ import {
 } from "@/lib/seo";
 import { Button } from "@/components/ui/button";
 import { ServiceQuickNav } from "@/components/sections/ServiceQuickNav";
+import { CountryFlagBadge } from "@/components/ui/CountryFlagBadge";
 import { Link, useParams } from "react-router-dom";
 
 function getPpcBullets(service: { serviceGroup: string; nameRu: string }) {
@@ -277,7 +278,13 @@ export default function ServicePage() {
 
       <section className="mx-auto max-w-6xl px-4 py-12">
         <div className="rounded-2xl border border-border/70 bg-gradient-to-b from-muted/30 to-background p-6 md:p-10">
-          <div className="text-sm text-muted-foreground">Услуга</div>
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-muted-foreground">Услуга</span>
+            <CountryFlagBadge
+              countryKey={safeCountry}
+              className="h-6 w-9 opacity-60"
+            />
+          </div>
           <h1 className="mt-2 text-3xl font-extrabold tracking-tight md:text-4xl">
             {service.nameRu}
           </h1>
@@ -285,8 +292,12 @@ export default function ServicePage() {
             Дистанционно, без личного присутствия. 3 тарифа по срокам. Цена — по
             запросу.
           </p>
-          <div className="mt-6 flex flex-wrap gap-3">
-            <Button asChild size="lg" className="rounded-2xl">
+          <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+            <Button
+              asChild
+              size="lg"
+              className="w-full rounded-2xl sm:w-auto"
+            >
               <a
                 href={getTelegramChatUrl(baseMessage)}
                 target="_blank"
@@ -295,7 +306,12 @@ export default function ServicePage() {
                 Получить консультацию в Telegram
               </a>
             </Button>
-            <Button asChild size="lg" variant="outline" className="rounded-2xl">
+            <Button
+              asChild
+              size="lg"
+              variant="outline"
+              className="w-full rounded-2xl sm:w-auto"
+            >
               <a
                 href={getTelegramChatUrl(
                   `${baseMessage}\n\nПожалуйста, уточните сроки и требования.`,

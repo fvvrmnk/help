@@ -19,7 +19,7 @@ export function ServiceGrid(props: { countryKey: CountryKey }) {
   }, [props.countryKey, group]);
 
   return (
-    <section className="mx-auto max-w-6xl px-4 py-14">
+    <section id="catalog" className="mx-auto max-w-6xl px-4 py-14">
       <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
         <div>
           <h2 className="text-2xl font-bold tracking-tight">Каталог услуг</h2>
@@ -29,12 +29,12 @@ export function ServiceGrid(props: { countryKey: CountryKey }) {
           </p>
         </div>
 
-        <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-2 md:mx-0 md:flex-wrap md:overflow-visible md:px-0 md:pb-0" role="tablist" aria-label="Фильтр категорий услуг">
+        <div className="flex flex-wrap gap-1.5 md:gap-2" role="tablist" aria-label="Фильтр категорий услуг">
           <button
             type="button"
             onClick={() => setGroup("all")}
             className={cn(
-              "rounded-full border px-4 py-2 text-sm transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
+              "rounded-full border px-3 py-1.5 text-xs md:px-4 md:py-2 md:text-sm transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
               group === "all"
                 ? "border-primary/40 bg-primary/5 text-foreground"
                 : "border-border/70 text-muted-foreground hover:bg-muted/40 hover:text-foreground",
@@ -51,7 +51,7 @@ export function ServiceGrid(props: { countryKey: CountryKey }) {
               type="button"
               onClick={() => setGroup(g)}
               className={cn(
-                "rounded-full border px-4 py-2 text-sm transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
+                "rounded-full border px-3 py-1.5 text-xs md:px-4 md:py-2 md:text-sm transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
                 group === g
                   ? "border-primary/40 bg-primary/5 text-foreground"
                   : "border-border/70 text-muted-foreground hover:bg-muted/40 hover:text-foreground",

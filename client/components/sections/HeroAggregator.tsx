@@ -57,31 +57,30 @@ export function HeroAggregator() {
 
           <div className="relative">
             <div className="absolute -inset-6 rounded-[2rem] bg-gradient-to-tr from-primary/15 via-accent/10 to-transparent blur-2xl" />
-            <div className="relative rounded-[2rem] border border-border/70 bg-card p-7 shadow-sm">
-              <div className="grid gap-4">
-                <div className="rounded-2xl border border-border/70 bg-muted/30 p-6">
-                  <div className="text-sm font-semibold">Быстрый старт</div>
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    Напишите в Telegram, укажите страну гражданства и название
-                    услуги — ответим быстро.
-                  </p>
+            <div className="relative grid gap-4">
+              {/* Hero client photo */}
+              <div className="relative h-52 overflow-hidden rounded-[2rem] border border-border/70 shadow-sm md:h-64">
+                <img
+                  src="https://images.pexels.com/photos/8272159/pexels-photo-8272159.jpeg?auto=compress&cs=tinysrgb&w=800&h=500&fit=crop"
+                  alt="Довольный клиент получил готовые документы"
+                  className="h-full w-full object-cover object-center"
+                  loading="eager"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent rounded-[2rem]" />
+                <div className="absolute bottom-4 left-5 right-5">
+                  <p className="text-sm font-semibold text-white">Готово — документы оформлены дистанционно</p>
+                  <p className="mt-0.5 text-xs text-white/75">Без личного присутствия. Telegram-поддержка.</p>
                 </div>
+              </div>
 
-                <div className="grid gap-3 rounded-2xl border border-border/70 bg-background p-6">
+              <div className="rounded-2xl border border-border/70 bg-card p-5 shadow-sm">
+                <div className="grid gap-3">
                   <div className="text-sm font-semibold">Прозрачные условия</div>
-                  <ul className="space-y-2 text-sm text-muted-foreground">
+                  <ul className="space-y-1.5 text-sm text-muted-foreground">
                     <li>• 50% предоплата, остаток по готовности</li>
                     <li>• Подтверждение готовности фото/видео</li>
                     <li>• Доставка при необходимости (оплачивается отдельно)</li>
                   </ul>
-                </div>
-
-                <div className="grid gap-3 rounded-2xl border border-border/70 bg-muted/30 p-6">
-                  <div className="text-sm font-semibold">Подходит для</div>
-                  <p className="text-sm text-muted-foreground">
-                    Подачи документов за границу, обмена прав, оформления актовых
-                    записей и справок.
-                  </p>
                 </div>
               </div>
             </div>

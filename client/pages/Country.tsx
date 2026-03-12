@@ -145,6 +145,12 @@ const faqByCountry: Record<CountryKey, FAQItem[]> = {
   ],
 };
 
+const heroFlagBackgroundByCountry: Record<CountryKey, string> = {
+  rf: "linear-gradient(to bottom, rgba(255,255,255,0.93), rgba(255,255,255,0.93)), linear-gradient(to bottom, #ffffff 0 33.33%, #0039a6 33.33% 66.66%, #d52b1e 66.66% 100%)",
+  rb: "linear-gradient(to bottom, rgba(255,255,255,0.93), rgba(255,255,255,0.93)), linear-gradient(to bottom, #d22730 0 66%, #00af66 66% 100%)",
+  ua: "linear-gradient(to bottom, rgba(255,255,255,0.93), rgba(255,255,255,0.93)), linear-gradient(to bottom, #0057b7 0 50%, #ffd700 50% 100%)",
+};
+
 export default function CountryPage() {
   const params = useParams();
   const countryKey = params.countryKey as CountryKey | undefined;
@@ -185,11 +191,14 @@ export default function CountryPage() {
       />
 
       <section className="mx-auto max-w-6xl px-4 py-12">
-        <div className="rounded-2xl border border-border/70 bg-gradient-to-b from-muted/30 to-background p-6 md:p-10">
+        <div
+          className="rounded-2xl border border-border/70 bg-cover bg-center bg-no-repeat p-6 md:p-10"
+          style={{ backgroundImage: heroFlagBackgroundByCountry[safeCountry] }}
+        >
           <h1 className="text-3xl font-extrabold tracking-tight md:text-4xl">
             Услуги для граждан {countryNameForCitizens}
           </h1>
-          <p className="mt-3 max-w-prose text-muted-foreground">
+          <p className="mt-3 max-w-prose text-foreground/80">
             {count} услуг в каталоге. Все цены — «по запросу». 3 тарифа по срокам,
             дистанционное оформление, Telegram-поддержка.
           </p>

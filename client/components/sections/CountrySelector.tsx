@@ -44,7 +44,17 @@ export function CountrySelector(props: {
             <button
               key={c.key}
               type="button"
-              onClick={() => props.onChange(c.key)}
+              onClick={() => {
+                props.onChange(c.key);
+                setTimeout(() => {
+                  const el = document.getElementById("catalog");
+                  if (el) {
+                    const headerHeight = 72; // sticky header height in px
+                    const top = el.getBoundingClientRect().top + window.scrollY - headerHeight;
+                    window.scrollTo({ top, behavior: "smooth" });
+                  }
+                }, 50);
+              }}
               className={cn(
                 "group relative overflow-hidden rounded-2xl border p-6 text-left transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
                 active
