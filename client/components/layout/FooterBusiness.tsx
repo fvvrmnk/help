@@ -82,7 +82,7 @@ export function FooterBusiness() {
           <div className="overflow-hidden rounded-xl border border-border/70">
             <iframe
               title="DocsHelp офис — Eilat"
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3393.8!2d34.9476!3d29.5581!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x15006ef9bb4d3b5b%3A0x1!2sSderot+HaTmarim+3%2C+Eilat%2C+8786302!5e0!3m2!1sru!2sil!4v1700000000001"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3470.683594434245!2d34.95054701239916!3d29.554707375070315!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1500710cf65ad0fb%3A0xfd0bb445bc014056!2sDocs%20Help!5e0!3m2!1ses!2ses!4v1773871111899!5m2!1ses!2ses"
               width="100%"
               height="180"
               style={{ border: 0 }}
