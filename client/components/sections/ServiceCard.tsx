@@ -28,6 +28,10 @@ const imageByGroup: Record<ServiceGroup, HeaderImage> = {
     src: "https://images.pexels.com/photos/9829488/pexels-photo-9829488.jpeg",
     alt: "Диплом и документы об образовании",
   },
+  "Удостоверения": {
+    src: "https://images.pexels.com/photos/8633752/pexels-photo-8633752.jpeg",
+    alt: "Профессиональное удостоверение и журналистика",
+  },
 };
 
 /** Exact per-service overrides (highest priority) */
@@ -66,6 +70,11 @@ const imageByServiceName: Partial<Record<string, HeaderImage>> = {
     src: "https://cdn.builder.io/api/v1/image/assets%2F4307629f5e7f45b4a554e2409e0a9675%2Faed4ab9be43144aab4711d48137f9567?format=webp&width=800&height=1200",
     alt: "Водительское удостоверение РФ — стаж вождения",
     objectPosition: "50% 15%",
+  },
+  "Удостоверение журналиста РФ": {
+    src: "https://cdn.builder.io/api/v1/image/assets%2F4307629f5e7f45b4a554e2409e0a9675%2F647f58c2590b426485c417abe7113f3e?format=webp&width=800&height=1200",
+    alt: "Удостоверение журналиста и пресс-карты",
+    objectPosition: "50% 0%",
   },
   "Добавление категорий к водительскому удостоверению РФ": {
     src: "https://cdn.builder.io/api/v1/image/assets%2F4307629f5e7f45b4a554e2409e0a9675%2F3a67275f16bf48a193d9aea11e02b256?format=webp&width=800&height=1200",

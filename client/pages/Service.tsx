@@ -28,6 +28,44 @@ import { getServiceHeaderImage } from "@/components/sections/ServiceCard";
 import { ContactFormDialog } from "@/components/forms/ContactFormDialog";
 import { Link, useParams } from "react-router-dom";
 
+function getServiceSpecialContent(service: { serviceGroup: string; nameRu: string }) {
+  if (service.nameRu === "Удостоверение журналиста РФ") {
+    return {
+      title: "Возможности с удостоверением журналиста",
+      sections: [
+        {
+          heading: "🌍 Доступ на международные мероприятия",
+          items: [
+            "🎤 Концерты и музыкальные фестивали",
+            "⚽️ Футбольные матчи и спортивные соревнования",
+            "🏛️ Крупные форумы, выставки и конференции",
+            "✈️ Международные события и пресс-конференции",
+          ],
+        },
+        {
+          heading: "📝 Официальный статус",
+          items: [
+            "Журналист официально зарегистрирован и внесён в реестр СМИ",
+            "СМИ имеет лицензию Роскомнадзора",
+            "Статус признан в странах СНГ и за границей",
+            "Возможность получения аккредитаций на событиях",
+          ],
+        },
+        {
+          heading: "📩 Упрощённый процесс аккредитации",
+          items: [
+            "Во многих случаях аккредитация оформляется простой отправкой электронного письма",
+            "Не требуется личное присутствие для большинства мероприятий",
+            "Быстрое рассмотрение заявок организаторами событий",
+            "Полная поддержка на всех этапах оформления",
+          ],
+        },
+      ],
+    };
+  }
+  return null;
+}
+
 function getPpcBullets(service: { serviceGroup: string; nameRu: string }) {
   switch (service.serviceGroup) {
     case "Справки":
@@ -100,6 +138,20 @@ function getPpcBullets(service: { serviceGroup: string; nameRu: string }) {
           "Понятные сроки и процедура оплаты 50/50",
         ],
       };
+    case "Удостоверения":
+      return {
+        audience: [
+          "Для журналистов, которым нужен официальный статус и аккредитации",
+          "Для доступа к мероприятиям, концертам, выставкам и спортивным событиям",
+          "Для открытия возможностей внутри СНГ и за границей",
+        ],
+        deliverables: [
+          "Оформление официального удостоверения журналиста",
+          "Внесение во внутренний реестр СМИ",
+          "Сопровождение по всем этапам оформления",
+          "Помощь с аккредитациями на мероприятия",
+        ],
+      };
     default:
       return {
         audience: [
@@ -128,7 +180,9 @@ function buildFaq(params: {
           ? "по документам об образовании"
           : params.serviceGroup === "ЗАГС"
             ? "по актовым документам"
-            : "по справкам/документам";
+            : params.serviceGroup === "Удостоверения"
+              ? "по удостоверениям"
+              : "по справкам/документам";
 
   return [
     {
@@ -358,6 +412,33 @@ export default function ServicePage() {
           </div>
         </div>
       </section>
+
+      {(() => {
+        const specialContent = getServiceSpecialContent(service);
+        if (!specialContent) return null;
+        return (
+          <section className="mx-auto max-w-6xl px-4 py-12">
+            <div className="rounded-2xl border border-border/70 bg-muted/30 p-6 md:p-10">
+              <h2 className="text-2xl font-bold tracking-tight">{specialContent.title}</h2>
+              <div className="mt-8 grid gap-6 md:grid-cols-1">
+                {specialContent.sections.map((sec) => (
+                  <div key={sec.heading}>
+                    <h3 className="text-lg font-semibold tracking-tight">{sec.heading}</h3>
+                    <ul className="mt-3 space-y-2">
+                      {sec.items.map((item) => (
+                        <li key={item} className="flex gap-2 text-sm text-muted-foreground">
+                          <span className="shrink-0">•</span>
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        );
+      })()}
 
       <section id="tariffs" className="mx-auto max-w-6xl px-4 py-12">
         <h2 className="text-2xl font-bold tracking-tight">Сроки и тарифы</h2>
