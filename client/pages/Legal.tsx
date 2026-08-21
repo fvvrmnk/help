@@ -3,6 +3,7 @@ import { Seo, breadcrumbsJsonLd, organizationJsonLd } from "@/lib/seo";
 import { Button } from "@/components/ui/button";
 import { getTelegramChatUrl } from "@/lib/telegram";
 import { Link, useParams } from "react-router-dom";
+import NotFound from "./NotFound";
 
 type LegalType = "privacy" | "cookies" | "terms" | "disclaimer";
 
@@ -21,11 +22,11 @@ function getTitle(type: LegalType) {
 
 export default function LegalPage() {
   const { type } = useParams();
-  const legalType: LegalType =
-    type === "privacy" || type === "cookies" || type === "terms" || type === "disclaimer"
-      ? type
-      : "privacy";
+  if (type !== "privacy" && type !== "cookies" && type !== "terms" && type !== "disclaimer") {
+    return <NotFound />;
+  }
 
+  const legalType: LegalType = type;
   const title = getTitle(legalType);
 
   const canonicalPath = `/legal/${legalType}`;

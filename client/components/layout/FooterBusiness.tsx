@@ -96,7 +96,7 @@ export function FooterBusiness() {
 
       <div className="border-t border-border/70">
         <div className="mx-auto flex max-w-6xl flex-col gap-2 px-4 py-6 text-xs text-muted-foreground md:flex-row md:items-center md:justify-between">
-          <div>© {new Date().getFullYear()} DocsHelp. Все права защищены.</div>
+          <div>© DocsHelp. Все права защищены.</div>
           <div className="flex items-center gap-2">
             <span>Контакт:</span>
             <a

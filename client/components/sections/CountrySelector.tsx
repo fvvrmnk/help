@@ -1,5 +1,6 @@
 import { countries, type CountryKey } from "@/data/catalog";
 import { cn } from "@/lib/utils";
+import { Link } from "react-router-dom";
 
 const RF_TILE_BG =
   "https://cdn.builder.io/api/v1/image/assets%2F4307629f5e7f45b4a554e2409e0a9675%2Fcf4fd39aaff44d94b06a4698e13579f0?format=webp&width=1200&height=800";
@@ -118,6 +119,17 @@ export function CountrySelector(props: {
           );
         })}
       </div>
+
+      <nav aria-label="Страницы услуг по странам" className="mt-5 text-sm text-muted-foreground">
+        Отдельные каталоги: {countries.map((country, index) => (
+          <span key={country.key}>
+            {index > 0 ? " · " : ""}
+            <Link className="text-primary underline-offset-4 hover:underline" to={`/${country.key}`}>
+              услуги для граждан {country.nameRuGenitive}
+            </Link>
+          </span>
+        ))}
+      </nav>
     </section>
   );
 }

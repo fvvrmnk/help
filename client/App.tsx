@@ -42,44 +42,15 @@ const App = () => (
 // Initialize React root with proper hydration support
 const container = document.getElementById("root")!;
 
-// Check if this is SSR (has server-rendered content) or SPA (empty)
-const isSSR = container.innerHTML.trim().length > 0;
+// Vite serves the HTML shell with an SSR placeholder during development.
+// Only hydrate when the placeholder has been replaced by server-rendered markup.
+const isSSR =
+  import.meta.env.PROD &&
+  container.innerHTML.trim().length > 0 &&
+  !container.innerHTML.includes("<!--ssr-html-->");
 
 // Use a data attribute to prevent double initialization during HMR
 const IS_HYDRATED = "data-hydrated";
-
-// Suppress hydration warnings in development (Radix UI components may have minor style differences)
-// This is safe because we validate in production through testing
-if (import.meta.env.DEV) {
-  const originalWarn = console.warn;
-  const originalError = console.error;
-
-  const warningFilter = (message: string) => {
-    // Suppress hydration mismatch warnings for known benign mismatches
-    if (
-      message.includes("Hydration failed") ||
-      message.includes("did not match") ||
-      message.includes("pointer-events")
-    ) {
-      return true;
-    }
-    return false;
-  };
-
-  console.warn = function(...args: any[]) {
-    if (args[0] && typeof args[0] === "string" && warningFilter(args[0])) {
-      return;
-    }
-    originalWarn.apply(console, args);
-  };
-
-  console.error = function(...args: any[]) {
-    if (args[0] && typeof args[0] === "string" && warningFilter(args[0])) {
-      return;
-    }
-    originalError.apply(console, args);
-  };
-}
 
 if (!container.hasAttribute(IS_HYDRATED)) {
   container.setAttribute(IS_HYDRATED, "true");

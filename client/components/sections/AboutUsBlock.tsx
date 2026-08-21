@@ -2,7 +2,7 @@ import { Award, Users, Clock, MessageCircle, Gift, Handshake, Briefcase, CheckCi
 
 const items = [
   { icon: Award, text: "На рынке более пяти лет" },
-  { icon: Users, text: "Более сотни довольных клиентов" },
+  { icon: Users, text: "Более тысячи довольных клиентов" },
   { icon: CheckCircle, text: "Работаем напрямую без посредников" },
   { icon: Clock, text: "Работаем без выходных" },
   { icon: MessageCircle, text: "Бесплатная консультация" },

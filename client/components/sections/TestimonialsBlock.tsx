@@ -79,7 +79,7 @@ export function TestimonialsBlock() {
       <div className="text-center">
         <h2 className="text-2xl font-bold tracking-tight">Отзывы клиентов</h2>
         <p className="mt-2 text-sm text-muted-foreground max-w-xl mx-auto">
-          Более 100 довольных клиентов доверили нам оформление важных документов.
+          Более 1000 довольных клиентов доверили нам оформление важных документов.
           Смотрите, что они говорят о нашем сервисе.
         </p>
       </div>
@@ -132,7 +132,7 @@ export function TestimonialsBlock() {
       {/* Trust stats */}
       <div className="mt-12 grid gap-4 sm:grid-cols-3 text-center">
         <div className="rounded-2xl border border-border/70 bg-muted/30 p-6">
-          <div className="text-2xl font-bold">100+</div>
+          <div className="text-2xl font-bold">1000+</div>
           <div className="mt-1 text-sm text-muted-foreground">
             Довольных клиентов
           </div>

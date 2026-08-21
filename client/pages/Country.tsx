@@ -7,6 +7,7 @@ import {
 } from "@/data/catalog";
 import { useMemo } from "react";
 import { Link, useParams } from "react-router-dom";
+import NotFound from "./NotFound";
 import { BreadcrumbsBar } from "@/components/sections/BreadcrumbsBar";
 import { ServiceGrid } from "@/components/sections/ServiceGrid";
 import { HowItWorksSteps } from "@/components/sections/HowItWorksSteps";
@@ -155,17 +156,17 @@ export default function CountryPage() {
   const params = useParams();
   const countryKey = params.countryKey as CountryKey | undefined;
 
-  const safeCountry: CountryKey =
-    countryKey === "rf" || countryKey === "rb" || countryKey === "ua"
-      ? countryKey
-      : "rf";
+  if (countryKey !== "rf" && countryKey !== "rb" && countryKey !== "ua") {
+    return <NotFound />;
+  }
 
+  const safeCountry: CountryKey = countryKey;
   const countryName = getCountryNameRu(safeCountry);
   const countryNameForCitizens = getCountryNameRuGenitive(safeCountry);
   const count = getServicesByCountry(safeCountry).length;
 
   const seoText = useMemo(() => {
-    return `На этой странице собраны услуги DocsHelp для граждан ${countryNameForCitizens}. Выберите нужную категорию (справки, ЗАГС, права, паспорта, образование) и откройте страницу услуги — там вы найдёте структуру лендинга с тарифами по срокам, шагами оформления и FAQ. Мы работаем дистанционно: общение в Telegram, личное присутствие не требуется. Оплата прозрачная: 50% предоплата, остаток по готовности, подтверждение готовности возможно фото/видео по запросу. Все цены — «по запросу». Апостиль/легализация предоставляются при необходимости и где применимо — применимость уточняется в переписке.`;
+    return `На этой странице собраны услуги DocsHelp для граждан ${countryNameForCitizens}. Выберите нужную категорию (справки, ЗАГС, права, паспорта, образование и удостоверения) и откройте страницу услуги — там вы найдёте требования, тарифы по срокам, шаги оформления и FAQ. Мы работаем дистанционно: общение в Telegram, личное присутствие не требуется. Оплата прозрачная: 50% предоплата, остаток по готовности, подтверждение готовности возможно фото/видео по запросу. Все цены — «по запросу». Апостиль/легализация предоставляются при необходимости и где применимо — применимость уточняется в переписке.`;
   }, [countryNameForCitizens]);
 
   return (

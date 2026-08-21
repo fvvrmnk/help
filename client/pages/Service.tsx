@@ -27,6 +27,7 @@ import { CountryFlagBadge } from "@/components/ui/CountryFlagBadge";
 import { getServiceHeaderImage } from "@/components/sections/ServiceCard";
 import { ContactFormDialog } from "@/components/forms/ContactFormDialog";
 import { Link, useParams } from "react-router-dom";
+import NotFound from "./NotFound";
 
 function getServiceSpecialContent(service: { serviceGroup: string; nameRu: string }) {
   if (service.nameRu === "Удостоверение журналиста РФ") {
@@ -205,11 +206,13 @@ function buildFaq(params: {
       answer:
         "Прозрачно: 50% предоплата, остаток — по готовности. Подтверждение готовности возможно фото/видео по запросу.",
     },
-    {
-      question: "Можно ли оформить апостиль / легализацию?",
-      answer:
-        "При необходимости и если применимо к документу/стране. Мы объясним процесс и согласуем формат в переписке.",
-    },
+    ...(params.serviceGroup === "Удостоверения"
+      ? []
+      : [{
+          question: "Можно ли оформить апостиль / легализацию?",
+          answer:
+            "При необходимости и если применимо к документу/стране. Мы объясним процесс и согласуем формат в переписке.",
+        }]),
     {
       question: "Какие данные нужны для старта?",
       answer:
@@ -246,39 +249,21 @@ export default function ServicePage() {
   const countryKey = params.countryKey as CountryKey | undefined;
   const slug = params.slug;
 
-  const safeCountry: CountryKey =
-    countryKey === "rf" || countryKey === "rb" || countryKey === "ua"
-      ? countryKey
-      : "rf";
+  if (countryKey !== "rf" && countryKey !== "rb" && countryKey !== "ua") {
+    return <NotFound />;
+  }
 
+  const safeCountry: CountryKey = countryKey;
   const service = services.find(
     (s) => s.countryKey === safeCountry && s.slug === slug,
   );
 
   if (!service) {
-    return (
-      <div className="mx-auto max-w-6xl px-4 py-16">
-        <div className="rounded-2xl border border-border/70 bg-card p-8">
-          <h1 className="text-2xl font-bold tracking-tight">
-            Услуга не найдена
-          </h1>
-          <p className="mt-2 text-muted-foreground">
-            Проверьте ссылку или перейдите в каталог услуг по стране.
-          </p>
-          <div className="mt-6 flex flex-wrap gap-3">
-            <Button asChild className="rounded-xl">
-              <Link to={`/${safeCountry}`}>Каталог по стране</Link>
-            </Button>
-            <Button asChild variant="outline" className="rounded-xl">
-              <Link to="/">На главную</Link>
-            </Button>
-          </div>
-        </div>
-      </div>
-    );
+    return <NotFound />;
   }
 
   const countryName = getCountryNameRu(safeCountry);
+  const isJournalistService = service.nameRu === "Удостоверение журналиста РФ";
   const baseMessage = buildServiceTelegramMessage({
     serviceName: service.nameRu,
     countryName,
@@ -309,7 +294,9 @@ export default function ServicePage() {
     <div>
       <Seo
         title={`${service.nameRu} — DocsHelp`}
-        description={`${service.shortSummary} Цена — по запросу. 3 тарифа по срокам. Контакт: Telegram @Docshelpp.`}
+        description={isJournalistService
+          ? `${service.shortSummary} Поможем оформить официальный статус журналиста, внести данные во внутренний реестр СМИ и подготовить аккредитации на мероприятия. Цена — по запросу.`
+          : `${service.shortSummary} Цена — по запросу. 3 тарифа по срокам. Контакт: Telegram @Docshelpp.`}
         canonicalPath={canonicalPath}
         ogType="article"
         jsonLd={[
@@ -473,16 +460,18 @@ export default function ServicePage() {
 
       <section className="mx-auto max-w-6xl px-4 py-12">
         <div className="grid gap-6 md:grid-cols-2">
-          <div className="rounded-2xl border border-border/70 bg-card p-6">
-            <h2 className="text-xl font-bold tracking-tight">
-              Апостиль / легализация
-            </h2>
-            <p className="mt-3 text-sm text-muted-foreground">
-              Апостиль предоставляется при необходимости и если применимо к
-              документу/стране. Мы не даём юридических обещаний, но уверенно
-              объясним процесс и согласуем формат в переписке.
-            </p>
-          </div>
+          {!isJournalistService && (
+            <div className="rounded-2xl border border-border/70 bg-card p-6">
+              <h2 className="text-xl font-bold tracking-tight">
+                Апостиль / легализация
+              </h2>
+              <p className="mt-3 text-sm text-muted-foreground">
+                Апостиль предоставляется при необходимости и если применимо к
+                документу/стране. Мы не даём юридических обещаний, но уверенно
+                объясним процесс и согласуем формат в переписке.
+              </p>
+            </div>
+          )}
           <div className="rounded-2xl border border-border/70 bg-card p-6">
             <h2 className="text-xl font-bold tracking-tight">Доставка</h2>
             <p className="mt-3 text-sm text-muted-foreground">
@@ -505,7 +494,9 @@ export default function ServicePage() {
 
       <SEOTextBlock
         title="Почему выбирают DocsHelp"
-        text={`Мы строим процесс вокруг понятных шагов и прозрачных условий: дистанционное оформление, Telegram-коммуникация, три тарифа по срокам и процедура оплаты 50/50. Услуга «${service.nameRu}» оформляется с учётом требований страны подачи, а апостиль/легализация выполняются при необходимости и где применимо. Все цены — «по запросу», чтобы корректно учитывать объём и срочность.`}
+        text={isJournalistService
+          ? `Удостоверение журналиста РФ оформляется с внесением данных во внутренний реестр СМИ. Статус помогает запрашивать аккредитации на концерты, спортивные матчи, форумы, выставки и международные мероприятия. Во многих случаях заявку можно направить организаторам по электронной почте. DocsHelp сопровождает процесс дистанционно, помогает подготовить данные и остаётся на связи в Telegram. Все цены — «по запросу», а сроки и возможность аккредитации уточняются по конкретному мероприятию.`
+          : `Мы строим процесс вокруг понятных шагов и прозрачных условий: дистанционное оформление, Telegram-коммуникация, три тарифа по срокам и процедура оплаты 50/50. Услуга «${service.nameRu}» оформляется с учётом требований страны подачи, а апостиль/легализация выполняются при необходимости и где применимо. Все цены — «по запросу», чтобы корректно учитывать объём и срочность.`}
       />
 
       <div id="faq">

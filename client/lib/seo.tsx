@@ -1,8 +1,15 @@
-import { Helmet } from "react-helmet-async";
+import * as HelmetModule from "react-helmet-async";
+
+const helmetExports = HelmetModule as any;
+const { Helmet } = (helmetExports["default"] ?? helmetExports) as typeof import("react-helmet-async");
 
 export function getSiteOrigin() {
-  const env = import.meta.env.VITE_SITE_URL as string | undefined;
+  const env = (import.meta as ImportMeta & { env?: Record<string, string> }).env?.VITE_SITE_URL;
   if (env && env.startsWith("http")) return env.replace(/\/$/, "");
+
+  const serverOrigin = (globalThis as { __DOCSHELP_SITE_ORIGIN?: string }).__DOCSHELP_SITE_ORIGIN;
+  if (serverOrigin) return serverOrigin.replace(/\/$/, "");
+
   if (typeof window !== "undefined") return window.location.origin;
   return "";
 }
@@ -41,7 +48,6 @@ export function Seo(props: {
       <html lang="ru" />
       <title>{props.title}</title>
       <meta name="description" content={props.description} />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <meta name="theme-color" content="#3760BE" />
       <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
@@ -57,6 +63,9 @@ export function Seo(props: {
       <meta property="og:image:width" content="1200" />
       <meta property="og:image:height" content="630" />
       <meta property="og:image:type" content="image/webp" />
+      <meta property="og:image:alt" content={props.title} />
+      <meta property="og:locale" content="ru_RU" />
+      <meta property="og:site_name" content="DocsHelp" />
       {canonical ? <meta property="og:url" content={canonical} /> : null}
 
       {/* Twitter Card */}
@@ -64,9 +73,9 @@ export function Seo(props: {
       <meta name="twitter:title" content={props.title} />
       <meta name="twitter:description" content={props.description} />
       <meta name="twitter:image" content={ogImage} />
+      <meta name="twitter:image:alt" content={props.title} />
 
       {/* Additional SEO */}
-      <meta name="charset" content="UTF-8" />
       <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90' fill='%233760BE'>D</text></svg>" />
 
       {json.map((obj, idx) => (
@@ -79,21 +88,20 @@ export function Seo(props: {
 }
 
 export function organizationJsonLd() {
+  const origin = getSiteOrigin();
+  const logo = "https://cdn.builder.io/api/v1/image/assets%2F4307629f5e7f45b4a554e2409e0a9675%2Fcf4fd39aaff44d94b06a4698e13579f0?format=webp&width=200&height=200";
+  const image = "https://cdn.builder.io/api/v1/image/assets%2F4307629f5e7f45b4a554e2409e0a9675%2Fb22520228f91419aaa7a10ca92face3b?format=webp&width=1200&height=630";
+
   return {
     "@context": "https://schema.org",
-    "@type": "LocalBusiness",
-    "@id": getSiteOrigin() || undefined,
+    "@type": "Organization",
+    "@id": origin ? `${origin}/#organization` : undefined,
     name: "DocsHelp",
-    description: "Агрегатор дистанционных услуг по документам",
-    url: getSiteOrigin() || undefined,
-    image: "https://cdn.builder.io/api/v1/image/assets%2F4307629f5e7f45b4a554e2409e0a9675%2Fb22520228f91419aaa7a10ca92face3b?format=webp&width=1200&height=630",
-    logo: {
-      "@type": "ImageObject",
-      url: "https://cdn.builder.io/api/v1/image/assets%2F4307629f5e7f45b4a554e2409e0a9675%2Fcf4fd39aaff44d94b06a4698e13579f0?format=webp&width=200&height=200",
-    },
-    sameAs: [
-      "https://t.me/Docshelpp",
-    ],
+    description: "Дистанционные услуги по оформлению документов и справок.",
+    url: origin || undefined,
+    image,
+    logo,
+    sameAs: ["https://t.me/Docshelpp", "https://wa.me/972536001963"],
     contactPoint: [
       {
         "@type": "ContactPoint",
@@ -103,22 +111,24 @@ export function organizationJsonLd() {
       },
       {
         "@type": "ContactPoint",
-        contactType: "customer support",
         telephone: "+972-53-600-1963",
+        contactType: "customer support",
         availableLanguage: ["ru"],
       },
     ],
-    address: {
-      "@type": "PostalAddress",
-      streetAddress: "Patan 3",
-      addressLocality: "Eilat",
-      addressCountry: "IL",
-    },
-    aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: 4.9,
-      reviewCount: 6,
-    },
+  };
+}
+
+export function webSiteJsonLd() {
+  const origin = getSiteOrigin();
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": origin ? `${origin}/#website` : undefined,
+    name: "DocsHelp",
+    url: origin || undefined,
+    inLanguage: "ru-RU",
+    publisher: origin ? { "@id": `${origin}/#organization` } : undefined,
   };
 }
 
@@ -130,25 +140,24 @@ export function reviewsJsonLd(reviews: Array<{
 }>) {
   return {
     "@context": "https://schema.org",
-    "@type": "Product",
-    "@id": absoluteUrl("/"),
-    name: "DocsHelp",
-    aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: 4.9,
-      reviewCount: reviews.length,
-    },
-    review: reviews.map((r) => ({
-      "@type": "Review",
-      reviewRating: {
-        "@type": "Rating",
-        ratingValue: r.rating,
+    "@type": "ItemList",
+    name: "Отзывы клиентов DocsHelp",
+    itemListElement: reviews.map((r, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      item: {
+        "@type": "Review",
+        reviewRating: {
+          "@type": "Rating",
+          ratingValue: r.rating,
+          bestRating: 5,
+        },
+        author: {
+          "@type": "Person",
+          name: r.author || r.name,
+        },
+        reviewBody: r.text,
       },
-      author: {
-        "@type": "Person",
-        name: r.author || r.name,
-      },
-      reviewBody: r.text,
     })),
   };
 }
@@ -191,11 +200,10 @@ export function serviceJsonLd(params: {
     description: params.description,
     areaServed: params.areaServed,
     url: absoluteUrl(params.urlPath),
-    offers: {
-      "@type": "Offer",
-      price: "By request",
-      priceCurrency: "RUB",
-      availability: "https://schema.org/InStock",
+    provider: {
+      "@type": "Organization",
+      name: "DocsHelp",
+      url: getSiteOrigin() || undefined,
     },
   };
 }

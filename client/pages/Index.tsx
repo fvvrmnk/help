@@ -14,7 +14,7 @@ import { TrustBlock } from "@/components/sections/TrustBlock";
 import { AdvantagesBlock } from "@/components/sections/AdvantagesBlock";
 import { AboutUsBlock } from "@/components/sections/AboutUsBlock";
 import { TestimonialsBlock, testimonials } from "@/components/sections/TestimonialsBlock";
-import { Seo, faqJsonLd, organizationJsonLd, reviewsJsonLd } from "@/lib/seo";
+import { Seo, faqJsonLd, organizationJsonLd, reviewsJsonLd, webSiteJsonLd } from "@/lib/seo";
 
 const homeFaq: FAQItem[] = [
   {
@@ -80,7 +80,7 @@ export default function Index() {
         title="DocsHelp — дистанционные услуги по документам"
         description="Агрегатор дистанционных услуг по документам для граждан РФ, РБ и Украины: справки, ЗАГС, права, паспорта, образование. Апостиль при необходимости. Контакт: Telegram @Docshelpp."
         canonicalPath="/"
-        jsonLd={[organizationJsonLd(), faqJsonLd(homeFaq), reviewsJsonLd(testimonials)]}
+        jsonLd={[organizationJsonLd(), webSiteJsonLd(), faqJsonLd(homeFaq), reviewsJsonLd(testimonials)]}
       />
       <HeroAggregator />
       <CountrySelector value={countryKey} onChange={setCountryKey} />
