@@ -3,7 +3,7 @@ import * as fs from "fs";
 import * as path from "path";
 
 // Lazy import to avoid alias resolution at config load time
-let renderApp: ((url: string) => { html: string; helmet: any }) | null = null;
+let renderApp: ((url: string, siteOrigin?: string) => { html: string; helmet: any; statusCode: number }) | null = null;
 
 async function getRenderApp() {
   if (!renderApp) {
@@ -13,6 +13,17 @@ async function getRenderApp() {
   return renderApp;
 }
 
+function getRequestOrigin(req: any) {
+  const configured = process.env.VITE_SITE_URL
+    ?? process.env.VERCEL_PROJECT_PRODUCTION_URL
+    ?? (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : undefined);
+  if (configured?.startsWith("http")) return configured.replace(/\/$/, "");
+
+  const proto = String(req.headers["x-forwarded-proto"] ?? req.protocol).split(",")[0];
+  const host = String(req.headers["x-forwarded-host"] ?? req.get("host")).split(",")[0];
+  return `${proto}://${host}`;
+}
+
 const getIndexHtml = (() => {
   let html: string | null = null;
 
@@ -20,11 +31,18 @@ const getIndexHtml = (() => {
     if (html) return html;
 
     try {
-      // In production, read from dist
-      const distPath = path.join(process.cwd(), "dist", "spa", "index.html");
-      if (fs.existsSync(distPath)) {
-        html = fs.readFileSync(distPath, "utf-8");
-        return html;
+      // Prefer the Vite HTML shell, which contains the SSR placeholders.
+      const templatePaths = [
+        path.join(process.cwd(), "dist", "spa", "_index-shell.html"),
+        path.join(process.cwd(), "dist", "spa", "index.html"),
+      ];
+      for (const templatePath of templatePaths) {
+        if (!fs.existsSync(templatePath)) continue;
+        const candidate = fs.readFileSync(templatePath, "utf-8");
+        if (candidate.includes("<!--ssr-html-->") && candidate.includes("<!--ssr-helmet-->")) {
+          html = candidate;
+          return html;
+        }
       }
     } catch (e) {
       // Fallback
@@ -59,7 +77,7 @@ export const handleSSR: RequestHandler = async (req, res) => {
     const render = await getRenderApp();
 
     // Render app with SSR
-    const { html, helmet } = render(req.url);
+    const { html, helmet, statusCode } = render(req.url, getRequestOrigin(req));
 
     // Build helmet HTML
     const helmetHtml = [
@@ -74,6 +92,7 @@ export const handleSSR: RequestHandler = async (req, res) => {
       .replace("<!--ssr-html-->", html)
       .replace("<!--ssr-helmet-->", helmetHtml);
 
+    res.status(statusCode);
     res.setHeader("Content-Type", "text/html; charset=utf-8");
     res.send(rendered);
   } catch (error) {

@@ -17,10 +17,14 @@ function joinOrigin(origin: string, path: string) {
 }
 
 export const handleSitemap: RequestHandler = (req, res) => {
-  const proto = (req.headers["x-forwarded-proto"] as string | undefined) ??
-    req.protocol;
-  const host = req.headers["x-forwarded-host"] as string | undefined;
-  const origin = `${proto}://${host ?? req.get("host")}`;
+  const configuredOrigin = process.env.VITE_SITE_URL
+    ?? process.env.VERCEL_PROJECT_PRODUCTION_URL
+    ?? (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : undefined);
+  const proto = String(req.headers["x-forwarded-proto"] ?? req.protocol).split(",")[0];
+  const host = String(req.headers["x-forwarded-host"] ?? req.get("host")).split(",")[0];
+  const origin = (configuredOrigin?.startsWith("http")
+    ? configuredOrigin
+    : `${proto}://${host}`).replace(/\/$/, "");
 
   const staticPaths = [
     "/",
@@ -38,7 +42,6 @@ export const handleSitemap: RequestHandler = (req, res) => {
   );
 
   const urls = [...staticPaths, ...servicePaths];
-  const lastmod = new Date().toISOString().slice(0, 10);
 
   const body = `<?xml version="1.0" encoding="UTF-8"?>\n`;
   const urlsetOpen = `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`;
@@ -50,7 +53,6 @@ export const handleSitemap: RequestHandler = (req, res) => {
       return (
         "  <url>\n" +
         `    <loc>${loc}</loc>\n` +
-        `    <lastmod>${lastmod}</lastmod>\n` +
         "  </url>\n"
       );
     })

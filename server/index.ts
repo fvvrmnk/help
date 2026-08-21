@@ -3,9 +3,10 @@ import express from "express";
 import cors from "cors";
 import { handleDemo } from "./routes/demo";
 import { handleSitemap } from "./routes/sitemap";
+import { handleRobots } from "./routes/robots";
 import { handleContact } from "./routes/contact";
 
-export function createServer() {
+export function createServer(staticDir?: string) {
   const app = express();
 
   // Middleware
@@ -24,6 +25,12 @@ export function createServer() {
 
   // SEO
   app.get("/sitemap.xml", handleSitemap);
+  app.get("/robots.txt", handleRobots);
+
+  // Serve built assets before the SSR fallback in the standalone server.
+  if (staticDir) {
+    app.use(express.static(staticDir));
+  }
 
   // SSR catch-all handler
   // Note: In development, this is bypassed by Vite's SPA serving
@@ -39,8 +46,13 @@ export function createServer() {
     return ssrHandler;
   };
 
-  // Register the catch-all route with lazy-loaded handler
-  app.get("*", (req, res, next) => {
+  // Register the catch-all handler with lazy-loaded SSR.
+  app.use((req, res) => {
+    if (req.path.startsWith("/api/") || req.path.startsWith("/health")) {
+      res.status(404).json({ error: "API endpoint not found" });
+      return;
+    }
+
     loadSSRHandler()
       .then((handler) => handler(req, res))
       .catch((err) => {

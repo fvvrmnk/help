@@ -3,6 +3,9 @@ import path from "path";
 
 // Server build configuration
 export default defineConfig({
+  ssr: {
+    noExternal: ["react-helmet-async"],
+  },
   build: {
     lib: {
       entry: path.resolve(__dirname, "server/node-build.ts"),

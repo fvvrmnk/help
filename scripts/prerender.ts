@@ -1,6 +1,7 @@
 import { renderApp } from "../server/ssr";
 import * as fs from "fs";
 import * as path from "path";
+import { services } from "../shared/catalog";
 
 interface PageRoute {
   path: string;
@@ -16,54 +17,52 @@ const ROUTES: PageRoute[] = [
   { path: "/legal/cookies", filename: "legal/cookies/index.html" },
   { path: "/legal/terms", filename: "legal/terms/index.html" },
   { path: "/legal/disclaimer", filename: "legal/disclaimer/index.html" },
+  ...services.map((service) => ({
+    path: `/services/${service.countryKey}/${service.slug}`,
+    filename: `services/${service.countryKey}/${service.slug}/index.html`,
+  })),
 ];
+
+function getHelmetHtml(helmet: any) {
+  return [
+    helmet.title?.toString() || "<title>DocsHelp</title>",
+    helmet.meta?.toString() || "",
+    helmet.link?.toString() || "",
+    helmet.script?.toString() || "",
+  ].join("\n");
+}
 
 async function prerender() {
   const outputDir = path.join(process.cwd(), "dist", "spa");
+  const templatePath = path.join(outputDir, "index.html");
 
+  if (!fs.existsSync(templatePath)) {
+    throw new Error(`Built HTML shell not found: ${templatePath}`);
+  }
+
+  const template = fs.readFileSync(templatePath, "utf-8");
+  fs.writeFileSync(path.join(outputDir, "_index-shell.html"), template, "utf-8");
+  const siteOrigin = process.env.VITE_SITE_URL
+    ?? process.env.VERCEL_PROJECT_PRODUCTION_URL
+    ?? (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : undefined);
   console.log("📄 Starting static prerendering...");
 
   for (const route of ROUTES) {
-    try {
-      const { html, helmet } = renderApp(route.path);
+    const { html, helmet } = renderApp(route.path, siteOrigin);
+    const fullHtml = template
+      .replace("<!--ssr-html-->", html)
+      .replace("<!--ssr-helmet-->", getHelmetHtml(helmet));
 
-      // Build helmet HTML
-      const helmetHtml = [
-        helmet.title?.toString() || "<title>DocsHelp</title>",
-        helmet.meta?.toString() || "",
-        helmet.link?.toString() || "",
-        helmet.script?.toString() || "",
-      ].join("\n");
-
-      // Full HTML document
-      const fullHtml = `<!doctype html>
-<html lang="ru">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    ${helmetHtml}
-    <link rel="stylesheet" href="/assets/index.css" />
-  </head>
-  <body>
-    <div id="root">${html}</div>
-    <script type="module" src="/assets/index.js"></script>
-  </body>
-</html>`;
-
-      // Create directory if needed
-      const filePath = path.join(outputDir, route.filename);
-      const dir = path.dirname(filePath);
-      fs.mkdirSync(dir, { recursive: true });
-
-      // Write file
-      fs.writeFileSync(filePath, fullHtml, "utf-8");
-      console.log(`✓ ${route.path} → ${route.filename}`);
-    } catch (error) {
-      console.error(`✗ Error prerendering ${route.path}:`, error);
-    }
+    const filePath = path.join(outputDir, route.filename);
+    fs.mkdirSync(path.dirname(filePath), { recursive: true });
+    fs.writeFileSync(filePath, fullHtml, "utf-8");
+    console.log(`✓ ${route.path} → ${route.filename}`);
   }
 
   console.log("\n✅ Prerendering complete!");
 }
 
-prerender().catch(console.error);
+prerender().catch((error) => {
+  console.error(error);
+  process.exitCode = 1;
+});
